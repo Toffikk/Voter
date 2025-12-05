@@ -20,7 +20,7 @@ class VoteService(private val voteRepository: VoteRepository) {
         fun hasEverVoted() = results.za.get() + results.przeciw.get() + results.wstrzymuje.get() > 0
     }
 
-    private var currentSession = VotingSession(id = 1)
+    private var currentSession = VotingSession(id = 0)
 
     fun startVoting(durationSeconds: Int): Boolean {
         if (currentSession.active) return false
@@ -36,16 +36,6 @@ class VoteService(private val voteRepository: VoteRepository) {
     fun stopVoting() {
         currentSession.active = false
         println("succeeded")
-    }
-
-    fun reset() {
-        currentSession = VotingSession(
-            id = currentSession.id + 1,
-            active = false,
-            endsAt = 0,
-            results = VoteCounters(),
-            votedUsers = mutableSetOf()
-        )
     }
 
     fun getSession() = currentSession

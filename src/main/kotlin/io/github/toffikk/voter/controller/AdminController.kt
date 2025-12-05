@@ -30,12 +30,6 @@ class AdminController(private val voteService: VoteService) {
         return ResponseEntity.ok(mapOf("ok" to true))
     }
 
-    @PostMapping("/reset")
-    fun reset(): ResponseEntity<Any> {
-        voteService.reset()
-        return ResponseEntity.ok(mapOf("ok" to true))
-    }
-
     @GetMapping("/status")
     fun status(): ResponseEntity<Any> {
         val session = voteService.getSession()

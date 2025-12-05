@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableScheduling
 @EnableJpaAuditing
 @SpringBootApplication
-class VoteApplication
+class VoterApplication
 
 fun main(args: Array<String>) {
-    runApplication<VoteApplication>(*args)
+    runApplication<VoterApplication>(*args)
 }
