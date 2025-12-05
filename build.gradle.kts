@@ -38,9 +38,6 @@ dependencies {
     implementation("org.hibernate.orm:hibernate-community-dialects")
     implementation("com.zaxxer:HikariCP:7.0.2")
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.2")
-    implementation("io.github.neatguycoding:netty-socketio-core:3.0.0")
-    implementation("io.github.neatguycoding:netty-socketio-spring:3.0.0")
-    implementation("io.github.neatguycoding:netty-socketio-spring-boot-starter:3.0.0")
 
     runtimeOnly("com.zaxxer:HikariCP:6.2.1")
     runtimeOnly("com.mysql:mysql-connector-j:9.2.0")

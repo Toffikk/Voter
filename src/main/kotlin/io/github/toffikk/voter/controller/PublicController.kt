@@ -82,7 +82,15 @@ class PublicController(
     }
 
     @PostMapping
-    fun vote(@CookieValue("voter_id") voterId: String, @RequestBody body: VoteRequest): ResponseEntity<Any> {
+    fun vote(@CookieValue("voter_id", required = false) voterIdCookie: String?, @RequestBody body: VoteRequest, response: HttpServletResponse): ResponseEntity<Any> {
+        val voterId = voterIdCookie ?: UUID.randomUUID().toString()
+        if (voterIdCookie == null) {
+            response.addCookie(Cookie("voter_id", voterId).apply {
+                path = "/"
+                maxAge = 60 * 60 * 24 * 365
+            })
+        }
+        
         val category = when (body.category.uppercase()) {
             "ZA", "PRZECIW", "WSTRZYMUJE" -> body.category.uppercase()
             else -> return ResponseEntity.badRequest().body(mapOf("error" to "Invalid vote type"))
