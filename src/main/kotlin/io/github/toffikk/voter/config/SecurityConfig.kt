@@ -1,8 +1,8 @@
 package io.github.toffikk.voter.config
 
+import io.github.toffikk.voter.service.DataService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -13,16 +13,16 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig {
+class SecurityConfig(private val dataService: DataService) {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        // would be good if we auth'd for the admin panel but its not needed rn
         http
             .csrf { it.disable() }
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .anyRequest().permitAll()
             }
             .httpBasic(Customizer.withDefaults())
@@ -33,7 +33,7 @@ class SecurityConfig {
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration().apply {
-            allowedOriginPatterns = listOf("*")
+            addAllowedOrigin(dataService.frontendAddress.allowedOrigin)
             allowedMethods = listOf("GET", "POST", "OPTIONS")
             allowedHeaders = listOf("X-Voter-Id", "Content-Type")
             allowCredentials = false
