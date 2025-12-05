@@ -28,17 +28,10 @@ class PublicController(
     )
 
     @GetMapping
-    fun getStatus(@CookieValue(value = "voter_id", required = false) voterIdCookie: String?, response: HttpServletResponse): VoteStatusResponse {
-        val voterId = voterIdCookie ?: UUID.randomUUID().toString()
+    fun getStatus(@RequestHeader("X-Voter-Id") voterIdCookie: String, response: HttpServletResponse): VoteStatusResponse {
         val session = voteService.getSession()
-        val hasVoted = voteService.hasVotedThisSession(voterId)
+        val hasVoted = voteService.hasVotedThisSession(voterIdCookie)
 
-        if (voterIdCookie == null) {
-            response.addCookie(Cookie("voter_id", voterId).apply {
-                path = "/"
-                maxAge = 60 * 60 * 24 * 365
-            })
-        }
         val message = when {
             session.active -> null
             session.hasEverVoted() -> null
@@ -50,7 +43,7 @@ class PublicController(
             hasVoted = hasVoted,
             results = session.results.toMap(),
             message = message,
-            voterId = voterId,
+            voterId = voterIdCookie,
             sessionId = session.id
         )
     }
@@ -82,21 +75,13 @@ class PublicController(
     }
 
     @PostMapping
-    fun vote(@CookieValue("voter_id", required = false) voterIdCookie: String?, @RequestBody body: VoteRequest, response: HttpServletResponse): ResponseEntity<Any> {
-        val voterId = voterIdCookie ?: UUID.randomUUID().toString()
-        if (voterIdCookie == null) {
-            response.addCookie(Cookie("voter_id", voterId).apply {
-                path = "/"
-                maxAge = 60 * 60 * 24 * 365
-            })
-        }
-        
+    fun vote(@RequestHeader("X-Voter-Id") voterIdCookie: String, @RequestBody body: VoteRequest, response: HttpServletResponse): ResponseEntity<Any> {
         val category = when (body.category.uppercase()) {
             "ZA", "PRZECIW", "WSTRZYMUJE" -> body.category.uppercase()
             else -> return ResponseEntity.badRequest().body(mapOf("error" to "Invalid vote type"))
         }
 
-        val result = voteService.castVote(voterId, category)
+        val result = voteService.castVote(voterIdCookie, category)
 
         return when (result) {
             VoteResult.SUCCESS -> ResponseEntity.ok(mapOf("status" to "Vote accepted"))
