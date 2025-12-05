@@ -20,7 +20,7 @@ class AdminController(private val voteService: VoteService) {
         val duration = req.duration ?: 30
         val started = voteService.startVoting(duration)
         return if (started) ResponseEntity.ok(mapOf("ok" to true))
-        else ResponseEntity.status(HttpStatus.CONFLICT).body(mapOf("error" to "Session already running"))
+        else ResponseEntity.status(HttpStatus.CONFLICT).body(mapOf("error" to "Nie można rozpocząć więcej niż jednej sesji w tym samym czasie!"))
     }
 
     @PostMapping("/stop")

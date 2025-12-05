@@ -35,7 +35,7 @@ class VoteService(private val voteRepository: VoteRepository) {
 
     fun stopVoting() {
         currentSession.active = false
-        println("succeeded")
+        println("stopped vote")
     }
 
     fun getSession() = currentSession

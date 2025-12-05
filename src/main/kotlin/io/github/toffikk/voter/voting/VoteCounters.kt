@@ -7,11 +7,6 @@ data class VoteCounters(
     var przeciw: AtomicInteger = AtomicInteger(0),
     var wstrzymuje: AtomicInteger = AtomicInteger(0)
 ) {
-    fun reset() {
-        za.set(0)
-        przeciw.set(0)
-        wstrzymuje.set(0)
-    }
 
     fun toMap(): Map<String, Int> = mapOf(
         "ZA" to za.get(),
