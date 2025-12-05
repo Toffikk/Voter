@@ -2,6 +2,7 @@ package io.github.toffikk.voter.controller
 
 import io.github.toffikk.voter.service.VoteService
 import io.github.toffikk.voter.voting.dto.StartRequest
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -15,10 +16,9 @@ import org.springframework.web.bind.annotation.RestController
 class AdminController(private val voteService: VoteService) {
 
     @PostMapping("/start")
-    fun start(@RequestBody req: StartRequest): ResponseEntity<Any> {
+    fun start(@RequestBody @Valid req: StartRequest): ResponseEntity<Any> {
         println("vote started")
-        val duration = req.duration ?: 30
-        val started = voteService.startVoting(duration)
+        val started = voteService.startVoting(req.duration)
         return if (started) ResponseEntity.ok(mapOf("ok" to true))
         else ResponseEntity.status(HttpStatus.CONFLICT).body(mapOf("error" to "Nie można rozpocząć więcej niż jednej sesji w tym samym czasie!"))
     }

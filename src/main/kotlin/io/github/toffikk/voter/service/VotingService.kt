@@ -53,7 +53,7 @@ class VoteService(private val voteRepository: VoteRepository) {
             "PRZECIW" -> currentSession.results.przeciw.incrementAndGet()
             "WSTRZYMUJE" -> currentSession.results.wstrzymuje.incrementAndGet()
         }
-        println("succeeded to cast vote")
+        println("succeeded to cast vote" + vote.uppercase())
 
         voteRepository.save(Vote(voterId = voterId, sessionId = currentSession.id, choice = vote.uppercase()))
 
